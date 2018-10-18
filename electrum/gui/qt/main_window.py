@@ -210,7 +210,7 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, PrintError):
             interests = ['wallet_updated', 'network_updated', 'blockchain_updated',
                          'new_transaction', 'status',
                          'banner', 'verified', 'fee', 'fee_histogram', 'on_quotes',
-                         'on_history', 'channel', 'channels', 'ln_status']
+                         'on_history', 'channel', 'channels', 'ln_status', 'ln_message']
             # To avoid leaking references to "self" that prevent the
             # window from being GC-ed when closed, callbacks should be
             # methods of this class only, and specifically not be
@@ -328,7 +328,7 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, PrintError):
             wallet, tx = args
             if wallet == self.wallet:
                 self.tx_notification_queue.put(tx)
-        elif event in ['status', 'banner', 'verified', 'fee', 'fee_histogram']:
+        elif event in ['status', 'banner', 'verified', 'fee', 'fee_histogram', 'ln_message']:
             # Handle in GUI thread
             self.network_signal.emit(event, args)
         elif event == 'on_quotes':
@@ -363,6 +363,10 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, PrintError):
                 self.fee_slider.update()
                 self.do_update_fee()
             self.history_list.update_on_new_fee_histogram()
+        elif event == 'ln_message':
+            lnworker, message = args
+            if lnworker == self.wallet.lnworker:
+                self.show_message(message)
         else:
             self.print_error("unexpected network_qt signal:", event, args)
 
