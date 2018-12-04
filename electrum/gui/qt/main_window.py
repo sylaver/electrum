@@ -55,7 +55,7 @@ from electrum.util import (format_time, format_satoshis, format_fee_satoshis,
                            export_meta, import_meta, bh2u, bfh, InvalidPassword,
                            base_units, base_units_list, base_unit_name_to_decimal_point,
                            decimal_point_to_base_unit_name, quantize_feerate,
-                           UnknownBaseUnit, DECIMAL_POINT_DEFAULT, UserFacingException
+                           UnknownBaseUnit, DECIMAL_POINT_DEFAULT, UserFacingException,
                            InvoiceError)
 from electrum.lnutil import PaymentFailure
 from electrum.transaction import Transaction, TxOutput
@@ -1000,8 +1000,6 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, PrintError):
             self.address_list.update()
         self.clear_receive_tab()
         self.request_list.update()
-        items = self.request_list.findItems(key, Qt.UserRole|Qt.MatchContains|Qt.MatchRecursive, column=0)
-        self.request_list.setCurrentItem(items[0])
 
     def create_bitcoin_request(self, amount, message, expiration):
         addr = self.wallet.get_unused_address()
